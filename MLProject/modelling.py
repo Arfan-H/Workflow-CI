@@ -1,3 +1,6 @@
+import os
+os.environ["MLFLOW_ARTIFACT_URI"] = "file:./mlruns"
+
 import argparse
 import mlflow
 import mlflow.sklearn
