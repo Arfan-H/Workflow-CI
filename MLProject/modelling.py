@@ -6,6 +6,8 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 
+mlflow.set_tracking_uri("file:./mlruns")
+
 parser = argparse.ArgumentParser()
 parser.add_argument("--n_estimators", type=int, default=100)
 args = parser.parse_args()
