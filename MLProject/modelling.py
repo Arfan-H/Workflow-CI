@@ -6,6 +6,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 
+# Tracking URI aman untuk CI
 mlflow.set_tracking_uri("file:./mlruns")
 
 parser = argparse.ArgumentParser()
@@ -21,18 +22,18 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
 )
 
-with mlflow.start_run(nested=True):
-    model = RandomForestRegressor(
-        n_estimators=args.n_estimators,
-        random_state=42
-    )
-    model.fit(X_train, y_train)
+# ⛔ JANGAN start_run di MLflow Project
+model = RandomForestRegressor(
+    n_estimators=args.n_estimators,
+    random_state=42
+)
+model.fit(X_train, y_train)
 
-    preds = model.predict(X_test)
-    mse = mean_squared_error(y_test, preds)
+preds = model.predict(X_test)
+mse = mean_squared_error(y_test, preds)
 
-    mlflow.log_param("n_estimators", args.n_estimators)
-    mlflow.log_metric("mse", mse)
-    mlflow.sklearn.log_model(model, "model")
+mlflow.log_param("n_estimators", args.n_estimators)
+mlflow.log_metric("mse", mse)
+mlflow.sklearn.log_model(model, "model")
 
-    print("Training selesai. MSE:", mse)
+print("Training selesai. MSE:", mse)
