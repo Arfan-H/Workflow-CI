@@ -1,8 +1,9 @@
 import os
 
-# FORCE MLflow ke directory CI (ANTI /C:)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MLRUNS_DIR = os.path.join(BASE_DIR, "mlruns")
+
+os.makedirs(MLRUNS_DIR, exist_ok=True)
 
 os.environ["MLFLOW_TRACKING_URI"] = f"file:{MLRUNS_DIR}"
 os.environ["MLFLOW_ARTIFACT_URI"] = f"file:{MLRUNS_DIR}"
@@ -16,6 +17,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 
 mlflow.set_tracking_uri(f"file:{MLRUNS_DIR}")
+mlflow.set_experiment("ci-experiment")
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--n_estimators", type=int, default=100)
@@ -40,8 +42,6 @@ mse = mean_squared_error(y_test, preds)
 
 mlflow.log_param("n_estimators", args.n_estimators)
 mlflow.log_metric("mse", mse)
-
-# IMPORTANT: name bukan artifact_path (MLflow terbaru)
 mlflow.sklearn.log_model(model, name="model")
 
 print("Training selesai. MSE:", mse)
