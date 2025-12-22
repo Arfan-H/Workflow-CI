@@ -24,6 +24,7 @@ jobs:
 
     # ===== TRAIN MODEL =====
     - name: Train model
+      id: train_script
       run: |
         cd MLProject
         python modelling.py
