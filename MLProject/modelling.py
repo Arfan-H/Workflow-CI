@@ -1,3 +1,9 @@
+import mlflow
+import os
+
+mlflow.set_tracking_uri("file://" + os.path.abspath("mlruns"))
+mlflow.set_experiment("housing-ci")
+
 import argparse
 import mlflow
 import mlflow.sklearn
@@ -20,7 +26,9 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
 )
 
+
 with mlflow.start_run():
+
     model = RandomForestRegressor(
         n_estimators=args.n_estimators,
         random_state=42
@@ -30,8 +38,14 @@ with mlflow.start_run():
     preds = model.predict(X_test)
     mse = mean_squared_error(y_test, preds)
 
+    # ===== LOGGING =====
+    mlflow.log_param("model_type", "RandomForest")
     mlflow.log_param("n_estimators", args.n_estimators)
-    mlflow.log_metric("mse", mse)
-    mlflow.sklearn.log_model(model, "model")
+    mlflow.log_metric("rmse", mse ** 0.5)
+
+    mlflow.sklearn.log_model(
+        sk_model=model,
+        artifact_path="model"
+    )
 
 print("Training selesai. MSE:", mse)
