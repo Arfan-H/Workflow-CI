@@ -1,15 +1,10 @@
 import argparse
-import os
 import mlflow
 import mlflow.sklearn
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
-
-# ✅ Tracking URI ABSOLUTE (WAJIB di CI)
-mlflow.set_tracking_uri(f"file:{os.getcwd()}/mlruns")
-mlflow.set_experiment("ci-experiment")
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--n_estimators", type=int, default=100)
@@ -32,6 +27,7 @@ model.fit(X_train, y_train)
 preds = model.predict(X_test)
 mse = mean_squared_error(y_test, preds)
 
+# ⚠️ LANGSUNG LOG — JANGAN START / SET RUN
 mlflow.log_param("n_estimators", args.n_estimators)
 mlflow.log_metric("mse", mse)
 mlflow.sklearn.log_model(model, "model")

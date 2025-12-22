@@ -37,11 +37,11 @@ jobs:
 
     # ===================== GET RUN ID =====================
     - name: Get latest MLflow run id
-      id: get_run
       run: |
-        RUN_ID=$(ls -td MLProject/mlruns/*/* | head -n 1 | awk -F'/' '{print $4}')
+        RUN_ID=$(ls MLProject/mlruns/*/*/artifacts/model -d | tail -n 1 | awk -F'/' '{print $(NF-2)}')
         echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
         echo "Latest run id: $RUN_ID"
+
 
     # ===================== SAVE ARTIFACT =====================
     - name: Upload MLflow artifacts
