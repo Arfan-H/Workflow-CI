@@ -65,8 +65,8 @@ jobs:
         cd MLProject
         mlflow models build-docker \
           -m runs:/$RUN_ID/model \
-          -n ${{ secrets.DOCKERHUB_USERNAME }}/Housing:latest
+          -n ${{ secrets.DOCKERHUB_USERNAME }}/housing:latest
 
     - name: Push Docker image
       run: |
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/Housing:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/housing:latest
