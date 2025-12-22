@@ -28,12 +28,13 @@ jobs:
         python modelling.py
 
     # ===== GET RUN ID (AMAN) =====
-    - name: Get MLflow Run ID (SAFE)
+    - name: Get MLflow Run ID
       run: |
         cd MLProject
-        RUN_ID=$(grep run_id -R mlruns/*/*/meta.yaml | head -n 1 | cut -d':' -f2 | tr -d ' ')
+        RUN_ID=$(find mlruns -maxdepth 2 -type d -regex '.*/[0-9a-f]\{32\}' | sort | tail -n 1 | xargs basename)
         echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
-        echo "Detected RUN_ID=$RUN_ID"
+        echo "RUN_ID=$RUN_ID"
+
 
 
 
@@ -50,7 +51,7 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-        
+
     - name: Debug MLflow structure
       run: |
         cd MLProject
