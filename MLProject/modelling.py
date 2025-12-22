@@ -1,5 +1,11 @@
 import os
-os.environ["MLFLOW_ARTIFACT_URI"] = "file:./mlruns"
+
+# FORCE MLflow ke directory CI (ANTI /C:)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MLRUNS_DIR = os.path.join(BASE_DIR, "mlruns")
+
+os.environ["MLFLOW_TRACKING_URI"] = f"file:{MLRUNS_DIR}"
+os.environ["MLFLOW_ARTIFACT_URI"] = f"file:{MLRUNS_DIR}"
 
 import argparse
 import mlflow
@@ -8,6 +14,8 @@ import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
+
+mlflow.set_tracking_uri(f"file:{MLRUNS_DIR}")
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--n_estimators", type=int, default=100)
@@ -30,9 +38,10 @@ model.fit(X_train, y_train)
 preds = model.predict(X_test)
 mse = mean_squared_error(y_test, preds)
 
-# ⚠️ LANGSUNG LOG — JANGAN START / SET RUN
 mlflow.log_param("n_estimators", args.n_estimators)
 mlflow.log_metric("mse", mse)
-mlflow.sklearn.log_model(model, "model")
+
+# IMPORTANT: name bukan artifact_path (MLflow terbaru)
+mlflow.sklearn.log_model(model, name="model")
 
 print("Training selesai. MSE:", mse)

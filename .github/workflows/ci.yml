@@ -8,6 +8,9 @@ on:
 jobs:
   train-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      MLFLOW_TRACKING_URI: file:./MLProject/mlruns
+      MLFLOW_ARTIFACT_URI: file:./MLProject/mlruns
 
     steps:
     # ===================== CHECKOUT =====================
