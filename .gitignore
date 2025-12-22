@@ -1,14 +1,11 @@
-# virtual environment
-venv/
+# MLflow
+mlruns/*
+MLProject/*
 
-# python cache
-__pycache__/
-*.pyc
+# Model artifacts
+*.pkl
+*.h5
+*.keras
 
-# OS files
-.DS_Store
-Thumbs.db
-
-smsl
-
-    
+# Local DB
+mlflow.db
