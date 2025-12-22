@@ -1,70 +1,31 @@
-name: MLflow CI Pipeline
+name: CI Training ML
 
 on:
   push:
     branches: ["main"]
-  workflow_dispatch:
 
 jobs:
-  train-and-deploy:
+  train:
     runs-on: ubuntu-latest
 
     steps:
-    # ===================== CHECKOUT =====================
-    - name: Checkout repository
-      uses: actions/checkout@v3
+    - uses: actions/checkout@v3
 
-    # ===================== PYTHON =====================
-    - name: Set up Python 3.12
-      uses: actions/setup-python@v4
+    - uses: actions/setup-python@v4
       with:
         python-version: "3.12"
 
-    - name: Check Python version
-      run: python --version
-
-    # ===================== DEPENDENCIES =====================
-    - name: Install dependencies
+    - name: Install deps
       run: |
-        python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    # ===================== MLFLOW TRAINING =====================
-    - name: Run MLflow Project
+    - name: Train model
       run: |
         cd MLProject
-        mlflow run . --env-manager=local
+        python modelling.py
 
-
-    # ===================== GET RUN ID =====================
-    - name: Get latest MLflow run id
-      run: |
-        RUN_ID=$(ls MLProject/mlruns/*/*/artifacts/model -d | tail -n 1 | awk -F'/' '{print $(NF-2)}')
-        echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
-        echo "Latest run id: $RUN_ID"
-
-
-    # ===================== SAVE ARTIFACT =====================
-    - name: Upload MLflow artifacts
+    - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: mlflow-artifacts
+        name: mlruns
         path: MLProject/mlruns
-
-    # ===================== DOCKER =====================
-    - name: Log in to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-    - name: Build Docker model with MLflow
-      run: |
-        cd MLProject
-        mlflow models build-docker \
-          -m runs:/$RUN_ID/model \
-          -n ${{ secrets.DOCKERHUB_USERNAME }}/mlflow-housing:${{ github.sha }}
-
-    - name: Push Docker image
-      run: |
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/mlflow-housing:${{ github.sha }}
