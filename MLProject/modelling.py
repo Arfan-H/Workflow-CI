@@ -1,4 +1,5 @@
 import argparse
+import os
 import mlflow
 import mlflow.sklearn
 import pandas as pd
@@ -6,14 +7,14 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 
-# Tracking URI aman untuk CI
-mlflow.set_tracking_uri("file:./mlruns")
+# ✅ Tracking URI ABSOLUTE (WAJIB di CI)
+mlflow.set_tracking_uri(f"file:{os.getcwd()}/mlruns")
+mlflow.set_experiment("ci-experiment")
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--n_estimators", type=int, default=100)
 args = parser.parse_args()
 
-# Load data
 data = pd.read_csv("housing_clean_auto.csv")
 X = data.drop("median_house_value", axis=1)
 y = data["median_house_value"]
@@ -22,7 +23,6 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
 )
 
-# ⛔ JANGAN start_run di MLflow Project
 model = RandomForestRegressor(
     n_estimators=args.n_estimators,
     random_state=42
