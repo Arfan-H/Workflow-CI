@@ -1,11 +1,5 @@
-# MLflow
-mlruns/*
-MLProject/*
-
-# Model artifacts
+mlruns/
 *.pkl
-*.h5
-*.keras
-
-# Local DB
-mlflow.db
+smsl/
+venv/
+__pycache__/
