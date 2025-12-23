@@ -28,6 +28,14 @@ jobs:
       run: |
         cd MLProject
         mlflow run . --env-manager=local
+    
+    - name: Get latest MLflow Run ID
+      run: |
+        cd MLProject
+        RUN_ID=$(ls mlruns/*/*/artifacts/model | awk -F'/' '{print $(NF-2)}' | tail -n 1)
+        echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
+        echo "Detected RUN_ID=$RUN_ID"
+
 
     # ===== UPLOAD ARTIFACT =====
     - name: Upload MLflow artifacts
