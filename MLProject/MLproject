@@ -1,8 +1,11 @@
-name: Housing-Training
+name: housing-ci
 
 entry_points:
   main:
     parameters:
-      n_estimators: {type: int, default: 100}
+      n_estimators:
+        type: int
+        default: 100
     command: >
-      python modelling.py --n_estimators {n_estimators}
+      python modelling.py
+      --n_estimators {n_estimators}

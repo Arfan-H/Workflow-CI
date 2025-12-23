@@ -4,32 +4,40 @@ import mlflow
 import mlflow.sklearn
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
 
+# =====================
+# Arg parser
+# =====================
 parser = argparse.ArgumentParser()
 parser.add_argument("--n_estimators", type=int, default=100)
 args = parser.parse_args()
 
-data = pd.read_csv("housing_clean_auto.csv")
-X = data.drop("median_house_value", axis=1)
-y = data["median_house_value"]
+# =====================
+# Load data
+# =====================
+df = pd.read_csv("housing_preprocessing.csv")
+X = df.drop("median_income", axis=1)
+y = df["median_income"]
 
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
 )
 
+# =====================
+# Train model
+# =====================
 model = RandomForestRegressor(
     n_estimators=args.n_estimators,
     random_state=42
 )
-
 model.fit(X_train, y_train)
 
-preds = model.predict(X_test)
-rmse = mean_squared_error(y_test, preds, squared=False)
+# =====================
+# Save model (filesystem, CI SAFE)
+# =====================
+mlflow.sklearn.save_model(
+    sk_model=model,
+    path="model"
+)
 
-mlflow.log_param("n_estimators", args.n_estimators)
-mlflow.log_metric("rmse", rmse)
-mlflow.sklearn.log_model(model, artifact_path="model")
-
-print(f"Training selesai. RMSE: {rmse}")
+print("✅ Model saved to ./model")
