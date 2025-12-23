@@ -1,6 +1,4 @@
-name: housing-regression-project
-
-conda_env: conda.yaml
+name: Housing-Training
 
 entry_points:
   main:

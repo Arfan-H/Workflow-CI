@@ -1,4 +1,4 @@
-name: mlflow-env
+name: housing-env
 channels:
   - defaults
 dependencies:
@@ -6,9 +6,5 @@ dependencies:
   - pip
   - pip:
       - mlflow
-      - scikit-learn
       - pandas
-      - numpy
-      - matplotlib
-      - seaborn
-      - dagshub
+      - scikit-learn

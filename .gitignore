@@ -1,5 +1,17 @@
+# MLflow artifacts & database
 mlruns/
-*.pkl
-smsl/
-venv/
+mlflow.db
+MLProject/mlflow.db
+
+# Python cache
 __pycache__/
+*.pyc
+
+# Environment
+.env
+.venv
+venv/
+
+# OS
+.DS_Store
+Thumbs.db

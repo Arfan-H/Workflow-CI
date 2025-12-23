@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 
 # Konfigurasi MLflow
-mlflow.set_tracking_uri("file://" + os.path.abspath("mlruns"))
+# mlflow.set_tracking_uri("file://" + os.path.abspath("mlruns"))
 mlflow.set_experiment("ci-experiment")
 
 parser = argparse.ArgumentParser()

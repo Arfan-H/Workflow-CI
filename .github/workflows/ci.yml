@@ -23,23 +23,11 @@ jobs:
         pip install -r requirements.txt
 
     # ===== TRAIN MODEL =====
-    - name: Train model
+    - name: Train model 
       id: train_script
       run: |
         cd MLProject
-        python modelling.py
-
-    # ===== GET RUN ID (AMAN) =====
-    - name: Get MLflow Run ID
-      run: |
-        echo "RUN_ID=${{ steps.train_script.outputs.RUN_ID }}" >> $GITHUB_ENV
-        # cd MLProject
-        # RUN_ID=$(find mlruns -maxdepth 2 -type d -regex '.*/[0-9a-f]\{32\}' | sort | tail -n 1 | xargs basename)
-        # echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
-        # echo "RUN_ID=$RUN_ID"
-
-
-
+        mlflow run . --env-manager=local
 
     # ===== UPLOAD ARTIFACT =====
     - name: Upload MLflow artifacts
