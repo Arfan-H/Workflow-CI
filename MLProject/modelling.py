@@ -24,20 +24,22 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 # =====================
-# Train model
+# Train & log model
 # =====================
-model = RandomForestRegressor(
-    n_estimators=args.n_estimators,
-    random_state=42
-)
-model.fit(X_train, y_train)
+mlflow.set_experiment("ci-experiment")
 
-# =====================
-# Save model (filesystem, CI SAFE)
-# =====================
-mlflow.sklearn.save_model(
-    sk_model=model,
-    path="model"
-)
+with mlflow.start_run():
+    model = RandomForestRegressor(
+        n_estimators=args.n_estimators,
+        random_state=42
+    )
+    model.fit(X_train, y_train)
 
-print("✅ Model saved to ./model")
+    mlflow.log_param("n_estimators", args.n_estimators)
+
+    mlflow.sklearn.log_model(
+        sk_model=model,
+        artifact_path="model"
+    )
+
+print("✅ Model logged to MLflow")

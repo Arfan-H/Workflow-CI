@@ -2,31 +2,32 @@ name: CI/CD - Housing
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
+  pull_request:
 
 jobs:
   train-and-docker:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      # 🔥 INI KUNCI UTAMA
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v3
         with:
-          python-version: "3.12"
+          auto-update-conda: true
+          python-version: 3.12
+          activate-environment: base
 
       - name: Install MLflow
-        run: pip install mlflow
-
-      - name: Run MLflow Project
+        shell: bash -l {0}
         run: |
-          mlflow run MLProject -P n_estimators=100
+          pip install mlflow
 
-      - name: Build Docker image
+      - name: Run MLflow Project (conda.yaml)
+        shell: bash -l {0}
         run: |
           cd MLProject
-          mlflow models build-docker \
-            -m model \
-            -n housing-model
+          mlflow run . -P n_estimators=100
